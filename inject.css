@@ -1,0 +1,18 @@
+.save-btn {
+  margin-left: 5px;
+  background-color: #a3a3a3;
+  border-radius: 5px;
+  float: right;
+  padding: 3px 15px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #8a8a8a;
+  color: #fff;
+}
+
+.save-btn:active {
+  background-color: #6c6c6c;
+}

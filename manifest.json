@@ -1,0 +1,43 @@
+{
+  "name": "Scrambled Egg",
+  "manifest_version": 3,
+  "version": "0.1.0",
+  "description": "Jandan enhancement extension",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "cookies",
+    "webNavigation",
+    "pageCapture",
+    "downloads"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://jandan.net/*"],
+      "css": ["inject.css"],
+      "js": ["inject.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "host_permissions": ["*://jandan.net/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "/images/scrambled-egg-16.png",
+      "32": "/images/scrambled-egg-32.png",
+      "48": "/images/scrambled-egg-48.png",
+      "128": "/images/scrambled-egg-128.png"
+    }
+  },
+  "icons": {
+    "16": "/images/scrambled-egg-16.png",
+    "32": "/images/scrambled-egg-32.png",
+    "48": "/images/scrambled-egg-48.png",
+    "128": "/images/scrambled-egg-128.png"
+  }
+}

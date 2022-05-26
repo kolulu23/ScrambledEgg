@@ -1,0 +1,30 @@
+.pop-main {
+  width: 250px;
+  height: 400px;
+}
+
+.pop-btn:active {
+  background-color: grey;
+  color: white;
+}
+
+.pop-btn {
+  font-family: "Microsoft YaHei", Tahoma, Arial;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  background-color: #ccc;
+  color: #fff;
+  margin-left: 3px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: block;
+}
+
+.search-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: flex-start;
+}
