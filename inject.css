@@ -16,3 +16,13 @@
 .save-btn:active {
   background-color: #6c6c6c;
 }
+
+.save-plus, div.row div.jandan-vote a.save-plus {
+  color: #deae2ab5;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.save-plus-span {
+  float: none;
+}

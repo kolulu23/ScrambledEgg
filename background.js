@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 /* --------------------- Constants and global variables --------------------- */
 const JANDAN_DOMAINS = ["jandan.net"];
 const EXTRA_CSS = "inject.css";
@@ -29,18 +29,34 @@ chrome.webNavigation.onCompleted.addListener(onJandanPageLoaded, {
   url: [{ hostEquals: JANDAN_DOMAINS[0] }],
 });
 
-chrome.runtime.onMessage.addListener((message, sender, senderResp) => {
+chrome.runtime.onMessage.addListener((message, sender, respFunc) => {
   if (message.eventType === "saveMHTML") {
-    let tabId = sender?.tab?.id;
-    chrome.pageCapture.saveAsMHTML({ tabId }, (mhtmlData) => {
-      // TODO
-      console.log(mhtmlData.text());
-    });
-    senderResp();
+    onSaveAsMHTML(sender);
+  } else if (message.eventType === "saveIndex") {
+    onSaveIndex(sender);
+  } else {
+    console.log(
+      `${EGGS[0]} Handler for '${message?.eventType}' not implementated yet.`
+    );
   }
+  respFunc();
 });
 
-/* -------------------------------- Functions ------------------------------- */
+/* ------------------------- Event Handler Fucntions ------------------------ */
+function onSaveAsMHTML(sender) {
+  let tabId = sender?.tab?.id;
+  chrome.pageCapture.saveAsMHTML({ tabId }, (mhtmlData) => {
+    // TODO
+    mhtmlData.text().then((data) => {
+      console.log(data);
+    });
+  });
+}
+
+function onSaveIndex(sender) {
+  console.log(sender);
+}
+/* --------------------------- Dispatch Functions --------------------------- */
 /**
  * Handles chrome tab update event. Check if the tab's domain is valid.
  * Valid domain gets dispatched to subsequent functions.
@@ -122,7 +138,10 @@ async function post(navObj) {
  * @param {Object} navObj
  */
 async function pic(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -130,7 +149,10 @@ async function pic(navObj) {
  * @param {Object} navObj
  */
 async function treehole(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -138,7 +160,10 @@ async function treehole(navObj) {
  * @param {Object} navObj
  */
 async function qa(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -146,7 +171,10 @@ async function qa(navObj) {
  * @param {Object} navObj
  */
 async function zoo(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -154,7 +182,10 @@ async function zoo(navObj) {
  * @param {Object} navObj
  */
 async function ooxx(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -178,7 +209,10 @@ async function dzh(navObj) {
  * @param {Object} navObj
  */
 async function zhoubian(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /**
@@ -186,7 +220,10 @@ async function zhoubian(navObj) {
  * @param {Object} navObj
  */
 async function pond(navObj) {
-  console.log("TODO");
+  await chrome.scripting.executeScript({
+    target: { tabId: navObj.tabId },
+    func: saveInPostList,
+  });
 }
 
 /* ------------------------------ Procedrual UI ----------------------------- */
@@ -202,4 +239,29 @@ function saveInPost() {
   );
   shares.setAttribute("style", "float:none");
   shares.appendChild(SAVE_BUTTON);
+}
+
+function saveInPostList() {
+  const postList = document.querySelectorAll("#comments > ol > li");
+  postList.forEach((node) => {
+    let voteArea = node.querySelector("div > div.jandan-vote");
+    if (voteArea) {
+      let linkSpan = savePlus();
+      voteArea.appendChild(linkSpan);
+      linkSpan.addEventListener("click", (_event) => {
+        let parent = linkSpan?.parentElement?.parentElement;
+        let author = parent?.querySelector("div.author > strong");
+        let text = parent?.querySelector("div.text");
+        let postId = text?.querySelector("span > a");
+        let textContent = text?.querySelector("p");
+        // TODO handle images when it's in /pic page
+        console.log({
+          authorName: author.innerText,
+          authorCode: author.getAttribute("title").substring(4),
+          postId: postId.innerText,
+          textContent: textContent.innerHTML,
+        });
+      });
+    }
+  });
 }
