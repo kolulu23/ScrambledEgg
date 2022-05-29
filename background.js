@@ -32,9 +32,7 @@ chrome.runtime.onMessage.addListener((message, sender, respFunc) => {
   } else if (message.eventType === "saveIndex") {
     onSaveIndex(sender);
   } else {
-    console.log(
-      `${EGGS[0]} Handler for '${message?.eventType}' not implementated yet.`
-    );
+    console.log(`Handler for '${message?.eventType}' not implementated yet.`);
   }
   respFunc();
 });

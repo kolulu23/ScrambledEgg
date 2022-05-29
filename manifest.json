@@ -16,7 +16,7 @@
     {
       "matches": ["*://jandan.net/*"],
       "css": ["inject.css"],
-      "js": ["inject.js", "dispatch.js"],
+      "js": ["inject.js", "idb.js", "dispatch.js"],
       "run_at": "document_idle"
     }
   ],

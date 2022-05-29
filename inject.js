@@ -1,5 +1,6 @@
-const PAN = "[🍳]";
-console.log(`${PAN} Generating UI elements`);
+// Silly log severity emoji mappings
+const EGGS = ["[🥚]", "[🐣]", "[🐥]", "[🍳]", "[🐔]"];
+console.log(`${EGGS[0]} Generating UI elements`);
 
 /**
  * Create a button-like link that says 'Save Page'
@@ -41,7 +42,7 @@ function savePlus() {
  * Inject `Save Page` button to articles and dedicated pages.
  * @returns {Element} The save button it just injected
  */
-async function saveInPost() {
+function saveInPost() {
   let btn = saveBtn();
   const shares = document.querySelector(
     "#comments > div > div.social-share.share-component"
@@ -54,33 +55,67 @@ async function saveInPost() {
 /**
  * Inject `++` into post list like `/pic` and `/treehole`
  */
-async function saveInPostList() {
+function saveInPostList() {
   const postList = document.querySelectorAll("#comments > ol > li");
   postList.forEach((node) => {
     let voteArea = node.querySelector("div > div.jandan-vote");
     if (voteArea) {
       let linkSpan = savePlus();
+      let commentLink = voteArea.querySelector(
+        "span.tucao-unlike-container > a.tucao-btn"
+      );
+      linkSpan.addEventListener("click", onClickPlusPlus);
       voteArea.appendChild(linkSpan);
-      linkSpan.addEventListener("click", (_event) => {
-        let parent = linkSpan?.parentElement?.parentElement;
-        let author = parent?.querySelector("div.author > strong");
-        let text = parent?.querySelector("div.text");
-        let postId = text?.querySelector("span > a").innerText;
-        let htmlContent = "";
-        text?.querySelectorAll("p").forEach((p) => {
-          // Hidden for unpopularity
-          if (!p.getAttribute("class")) {
-            htmlContent += p.innerHTML;
-          }
-        });
-        // TODO handle images when it's in /pic page
-        console.log({
-          authorName: author.innerText,
-          authorCode: author.getAttribute("title").substring(4),
-          postId,
-          htmlContent,
-        });
-      });
+      commentLink.addEventListener("click", onCommentLinkClick);
     }
+  });
+}
+
+/**
+ * Handles click event on `++`.
+ *
+ * @param {Event} _event
+ */
+function onClickPlusPlus(_event) {
+  let parent = this?.parentElement?.parentElement;
+  let author = parent?.querySelector("div.author > strong");
+  let text = parent?.querySelector("div.text");
+  let postId = text?.querySelector("span > a").innerText;
+  let htmlContent = "";
+  text?.querySelectorAll("p").forEach((p) => {
+    // Hidden for unpopularity
+    if (!p.getAttribute("class")) {
+      htmlContent += p.innerHTML;
+    }
+  });
+  // TODO handle images
+  console.log({
+    authorName: author.innerText,
+    authorCode: author.getAttribute("title").substring(4),
+    postId,
+    htmlContent,
+  });
+}
+
+function onCommentLinkClick(_event) {
+  let dataId = this.getAttribute("data-id");
+  let commentId = "#jandan-tucao-" + dataId;
+  const commentDiv = document.querySelector(commentId);
+  if (!commentDiv) {
+    // Comment not created yet
+    return;
+  }
+  const submitBtn = commentDiv.querySelector("div.tucao-form > div > button");
+  const content = commentDiv.querySelector(
+    "div.tucao-form > textarea.tucao-content"
+  );
+  if (!submitBtn || !content) {
+    // TODO How do I get noticed when the button is generated?
+    console.log("Comment element not found");
+    return;
+  }
+  submitBtn.addEventListener("click", (_event) => {
+    // Perform the same check
+    console.log(`Comment ${dataId}: ${content.textContent}`);
   });
 }
