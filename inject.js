@@ -1,5 +1,8 @@
 // Silly log severity emoji mappings
 const EGGS = ["[🥚]", "[🐣]", "[🐥]", "[🍳]", "[🐔]"];
+const ID_CODE_PREFIX_LEN = 4;
+const ID_CODE_DISPLAY_LEN = 9;
+const ID_CODE_DISPLAY_END_INDEX = ID_CODE_DISPLAY_LEN + ID_CODE_PREFIX_LEN;
 console.log(`${EGGS[0]} Generating UI elements`);
 
 /**
@@ -38,6 +41,12 @@ function savePlus() {
   return linkSpan;
 }
 
+function idCodeTag() {
+  let idCodeSpan = document.createElement("span");
+  idCodeSpan.setAttribute("class", "id-code-tag");
+  return idCodeSpan;
+}
+
 /**
  * Inject `Save Page` button to articles and dedicated pages.
  * @returns {Element} The save button it just injected
@@ -53,10 +62,13 @@ function saveInPost() {
 }
 
 /**
- * Inject `++` into post list like `/pic` and `/treehole`
+ * Inject `++` into post list like `/pic` and `/treehole`.
+ * Also a stripped id code will be appended into op's name.
  */
-function saveInPostList() {
-  const postList = document.querySelectorAll("#comments > ol > li");
+function saveInPostList(postList) {
+  if (!postList) {
+    console.log(`${EGGS[3]} Post list not found`);
+  }
   postList.forEach((node) => {
     let voteArea = node.querySelector("div > div.jandan-vote");
     if (voteArea) {
@@ -67,6 +79,17 @@ function saveInPostList() {
       linkSpan.addEventListener("click", onClickPlusPlus);
       voteArea.appendChild(linkSpan);
       commentLink.addEventListener("click", onCommentLinkClick);
+    }
+    let author = node.querySelector("div > div.author");
+    if (author) {
+      let idCode = author
+        .querySelector("strong")
+        .getAttribute("title")
+        .substring(ID_CODE_PREFIX_LEN, ID_CODE_DISPLAY_END_INDEX);
+      let tag = idCodeTag();
+      tag.append(idCode);
+      author.appendChild(document.createElement("br"));
+      author.appendChild(tag);
     }
   });
 }

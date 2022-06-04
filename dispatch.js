@@ -1,5 +1,6 @@
 const ARTICLE_PATH_REG = /\/(p)\/(\d+)/;
 const NAV_URL_REG = /\/(\w+)(\/\w+)*/;
+// TODO Use content-script manifest config to do the pattern matching
 const FUNC_MAP = new Map([
   ["pic", pic],
   ["treehole", treehole],
@@ -61,6 +62,8 @@ function article(navObj) {
   }
   const like = document.querySelector("#content > div > a.jandan-zan");
   like.before(saveBtn());
+  const postList = document.querySelectorAll("div > ol.commentlist > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -76,7 +79,8 @@ function post(navObj) {
  * @param {Object} navObj
  */
 function pic(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -84,7 +88,8 @@ function pic(navObj) {
  * @param {Object} navObj
  */
 function treehole(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -92,7 +97,8 @@ function treehole(navObj) {
  * @param {Object} navObj
  */
 function qa(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -100,7 +106,8 @@ function qa(navObj) {
  * @param {Object} navObj
  */
 function zoo(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -108,7 +115,8 @@ function zoo(navObj) {
  * @param {Object} navObj
  */
 function ooxx(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -132,7 +140,8 @@ function dzh(navObj) {
  * @param {Object} navObj
  */
 function zhoubian(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
 
 /**
@@ -140,5 +149,6 @@ function zhoubian(navObj) {
  * @param {Object} navObj
  */
 function pond(navObj) {
-  saveInPostList();
+  const postList = document.querySelectorAll("#comments > ol > li");
+  saveInPostList(postList);
 }
