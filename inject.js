@@ -104,18 +104,22 @@ function onClickPlusPlus(_event) {
   let author = parent?.querySelector("div.author > strong");
   let text = parent?.querySelector("div.text");
   let postId = text?.querySelector("span > a").innerText;
-  let htmlContent = "";
+  let content = "";
+  let pics = [];
   text?.querySelectorAll("p").forEach((p) => {
     // Hidden for unpopularity
-    if (!p.getAttribute("class")) {
-      htmlContent += p.innerHTML;
+    if (p.getAttribute("class") !== "bad_content") {
+      content += p.innerHTML;
     }
+    // Contains images and check the original link
+    p.querySelectorAll("a").forEach((a) => pics.push(a.getAttribute("href")));
   });
   let post = {
     authorName: author.innerText,
     authorCode: author.getAttribute("title").substring(4),
     postId,
-    htmlContent,
+    content,
+    pics,
   };
   let postStore = IDB.transaction("posts", "readwrite").objectStore("posts");
   postStore.put(post);
