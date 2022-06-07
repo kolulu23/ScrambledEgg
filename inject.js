@@ -111,34 +111,36 @@ function onClickPlusPlus(_event) {
       htmlContent += p.innerHTML;
     }
   });
-  // TODO handle images
-  console.log({
+  let post = {
     authorName: author.innerText,
     authorCode: author.getAttribute("title").substring(4),
     postId,
     htmlContent,
-  });
+  };
+  let postStore = IDB.transaction("posts", "readwrite").objectStore("posts");
+  postStore.put(post);
 }
 
-function onCommentLinkClick(_event) {
+function onCommentLinkClick(event) {
   let dataId = this.getAttribute("data-id");
   let commentId = "#jandan-tucao-" + dataId;
-  const commentDiv = document.querySelector(commentId);
-  if (!commentDiv) {
-    // Comment not created yet
-    return;
-  }
-  const submitBtn = commentDiv.querySelector("div.tucao-form > div > button");
-  const content = commentDiv.querySelector(
-    "div.tucao-form > textarea.tucao-content"
-  );
-  if (!submitBtn || !content) {
-    // TODO How do I get noticed when the button is generated?
-    console.log("Comment element not found");
-    return;
-  }
-  submitBtn.addEventListener("click", (_event) => {
-    // Perform the same check
-    console.log(`Comment ${dataId}: ${content.textContent}`);
-  });
+  // Delay the event handler logic so that Jandan's original script gets executed first,
+  // this does not block the execution of current method though
+  setTimeout(() => {
+    const commentDiv = document.querySelector(commentId);
+    const submitBtn = commentDiv?.querySelector(
+      "div.tucao-form > div > button"
+    );
+    const content = commentDiv?.querySelector(
+      "div.tucao-form > textarea.tucao-content"
+    );
+    if (!submitBtn || !content) {
+      console.log("Comment element not found");
+      return;
+    }
+    submitBtn.addEventListener("click", (_event) => {
+      // Perform the same check
+      console.log(`Comment ${dataId}: ${content.value}`);
+    });
+  }, 1000);
 }

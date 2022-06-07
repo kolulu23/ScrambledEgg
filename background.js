@@ -1,7 +1,6 @@
 "use strict";
 /* --------------------- Constants and global variables --------------------- */
 const JANDAN_DOMAINS = ["jandan.net"];
-const EXTRA_CSS = "inject.css";
 
 /* ----------------------------- Event handlers ----------------------------- */
 chrome.runtime.onInstalled.addListener(() => {
