@@ -29,4 +29,10 @@ IDBREQ.onupgradeneeded = (event) => {
     postStore.createIndex("code", "authorCode", { unique: false });
     postStore.createIndex("name", "authorName", { unique: false });
   }
+  if (!idb.objectStoreNames.contains("comments")) {
+    let postStore = idb.createObjectStore("comments", { autoIncrement: true });
+    postStore.createIndex("op", "opName", { unique: false });
+    postStore.createIndex("postId", "postId", { unique: false });
+    postStore.createIndex("date", "date", { unique: false });
+  }
 };

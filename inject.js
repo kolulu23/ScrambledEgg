@@ -96,27 +96,26 @@ function saveInPostList(postList) {
 
 /**
  * Handles click event on `++`.
+ * Skips unpopular content. Saves pictures separately.
  *
  * @param {Event} _event
  */
 function onClickPlusPlus(_event) {
   let parent = this?.parentElement?.parentElement;
-  let author = parent?.querySelector("div.author > strong");
+  let { authorName, authorCode } = getAuthorInfoFromPost(parent);
   let text = parent?.querySelector("div.text");
   let postId = text?.querySelector("span > a").innerText;
   let content = "";
   let pics = [];
   text?.querySelectorAll("p").forEach((p) => {
-    // Hidden for unpopularity
     if (p.getAttribute("class") !== "bad_content") {
       content += p.innerHTML;
+      p.querySelectorAll("a").forEach((a) => pics.push(a.getAttribute("href")));
     }
-    // Contains images and check the original link
-    p.querySelectorAll("a").forEach((a) => pics.push(a.getAttribute("href")));
   });
   let post = {
-    authorName: author.innerText,
-    authorCode: author.getAttribute("title").substring(4),
+    authorName,
+    authorCode,
     postId,
     content,
     pics,
@@ -127,11 +126,14 @@ function onClickPlusPlus(_event) {
 
 function onCommentLinkClick(event) {
   let dataId = this.getAttribute("data-id");
-  let commentId = "#jandan-tucao-" + dataId;
+  let postIdQuery = `ol > li#comment-${dataId}`;
+  let commentIdQuery = `#jandan-tucao-${dataId}`;
+  const postArea = document.querySelector(postIdQuery);
+  let opInfo = getAuthorInfoFromPost(postArea);
   // Delay the event handler logic so that Jandan's original script gets executed first,
   // this does not block the execution of current method though
   setTimeout(() => {
-    const commentDiv = document.querySelector(commentId);
+    const commentDiv = postArea.querySelector(commentIdQuery);
     const submitBtn = commentDiv?.querySelector(
       "div.tucao-form > div > button"
     );
@@ -139,12 +141,38 @@ function onCommentLinkClick(event) {
       "div.tucao-form > textarea.tucao-content"
     );
     if (!submitBtn || !content) {
-      console.log("Comment element not found");
+      console.log(`${EGGS[3]} Comment element not found`);
       return;
     }
+    const authorName = commentDiv
+      ?.querySelector("div.tucao-form input.tucao-nickname")
+      ?.getAttribute("value");
+    const authorEmail = commentDiv
+      ?.querySelector("div.tucao-form input.tucao-email")
+      ?.getAttribute("value");
     submitBtn.addEventListener("click", (_event) => {
-      // Perform the same check
-      console.log(`Comment ${dataId}: ${content.value}`);
+      let comment = {
+        authorName,
+        authorEmail,
+        authorCode: "",
+        opName: opInfo.authorName,
+        opCode: opInfo.authorCode,
+        postId: dataId,
+        content: content.value,
+        date: new Date(),
+      };
+      let commentStore = IDB.transaction("comments", "readwrite").objectStore(
+        "comments"
+      );
+      commentStore.add(comment);
     });
   }, 1000);
+}
+
+function getAuthorInfoFromPost(postElement) {
+  const author = postElement?.querySelector("div.author > strong");
+  return {
+    authorName: author?.innerText,
+    authorCode: author?.getAttribute("title").substring(4),
+  };
 }
