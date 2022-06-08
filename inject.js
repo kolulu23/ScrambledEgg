@@ -139,24 +139,20 @@ function onClickPlusPlus(_event) {
 function onCommentLinkClick(event) {
   let dataId = this.getAttribute("data-id");
   let postIdQuery = `ol > li#comment-${dataId}`;
-  let commentIdQuery = `#jandan-tucao-${dataId}`;
   const postArea = document.querySelector(postIdQuery);
   let opInfo = getAuthorInfoFromPost(postArea);
 
   // Delay the event handler logic so that Jandan's original script gets executed first,
   // this does not block the execution of current method though
   setTimeout(() => {
-    const commentDiv = postArea.querySelector(commentIdQuery);
-    const submitBtn = commentDiv?.querySelector(
-      "div.tucao-form > div > button"
-    );
-    const authorName = commentDiv
-      ?.querySelector("div.tucao-form input.tucao-nickname")
+    const submitBtn = postArea.querySelector("div.tucao-form > div > button");
+    const authorName = postArea
+      .querySelector("div.tucao-form input.tucao-nickname")
       ?.getAttribute("value");
-    const authorEmail = commentDiv
-      ?.querySelector("div.tucao-form input.tucao-email")
+    const authorEmail = postArea
+      .querySelector("div.tucao-form input.tucao-email")
       ?.getAttribute("value");
-    const content = commentDiv?.querySelector(
+    const content = postArea.querySelector(
       "div.tucao-form > textarea.tucao-content"
     );
     if (!submitBtn || !content) {
@@ -186,16 +182,20 @@ function onCommentLinkClick(event) {
 
   // Hide location tag
   setTimeout(() => {
-    if (REMOVE_LOCATION) {
-      const locationTags = postArea.querySelectorAll(
-        `${commentIdQuery} div.tucao-row > div.tucao-author .tucao-location`
-      );
-      if (!locationTags) {
-        return;
-      }
-      locationTags.forEach((elem) => elem.setAttribute("hidden", true));
-    }
+    removeLocationFromComments(postArea);
   }, DELAY_TIME_200);
+}
+
+function removeLocationFromComments(commentElem) {
+  if (REMOVE_LOCATION) {
+    const locationTags = commentElem.querySelectorAll(
+      `div.tucao-row > div.tucao-author .tucao-location`
+    );
+    if (!locationTags) {
+      return;
+    }
+    locationTags.forEach((elem) => elem.setAttribute("hidden", true));
+  }
 }
 
 function getAuthorInfoFromPost(postElement) {
