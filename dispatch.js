@@ -32,21 +32,21 @@ chrome.runtime.onMessage.addListener((message, sender, respFunc) => {
 function dispatchUrl(navObj) {
   let matches = NAV_URL_REG.exec(navObj.path);
   if (!matches) {
-    console.log(`${EGGS[3]} No implementation for ${navObj.path}`);
+    console.log(`${EGGS[2]} No implementation for ${navObj.path}`);
     return;
   }
   navObj.navToken = matches[1];
   navObj.trialUri = matches[2];
   let f = FUNC_MAP.get(navObj.navToken);
   if (!f) {
-    console.log(`${EGGS[3]} No function mapping for '${navObj.navToken}'`);
+    console.log(`${EGGS[2]} No function mapping for '${navObj.navToken}'`);
     return;
   }
-  console.log(`${EGGS[1]} Injecting UI elements into this page`);
+  console.log(`${EGGS[2]} Injecting UI elements into this page`);
   try {
     f(navObj);
   } catch (err) {
-    console.error(`${EGGS[4]} Chrome probably doesn't happy about this:`);
+    console.error(`${EGGS[2]} Chrome probably doesn't happy about this:`);
     console.error(err);
   }
 }
@@ -57,7 +57,7 @@ function dispatchUrl(navObj) {
  */
 function article(navObj) {
   if (!ARTICLE_PATH_REG.test(navObj.path)) {
-    console.log(`${EGGS[0]} No implementation for ${navObj.path}`);
+    console.log(`${EGGS[2]} No implementation for ${navObj.path}`);
     return;
   }
   const like = document.querySelector("#content > div > a.jandan-zan");

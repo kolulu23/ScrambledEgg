@@ -3,6 +3,13 @@ const EGGS = ["[🥚]", "[🐣]", "[🐥]", "[🍳]", "[🐔]"];
 const ID_CODE_PREFIX_LEN = 4;
 const ID_CODE_DISPLAY_LEN = 9;
 const ID_CODE_DISPLAY_END_INDEX = ID_CODE_DISPLAY_LEN + ID_CODE_PREFIX_LEN;
+// Could be stored in extension storage
+const REMOVE_LOCATION = true;
+const DELAY_TIME_100 = 100;
+const DELAY_TIME_200 = 200;
+const DELAY_TIME_500 = 500;
+const DELAY_TIME_1000 = 1000;
+
 console.log(`${EGGS[0]} Generating UI elements`);
 
 /**
@@ -124,12 +131,18 @@ function onClickPlusPlus(_event) {
   postStore.put(post);
 }
 
+/**
+ * If user do not want to show location tags, they can always turn it off.
+ *
+ * @param {Event} event
+ */
 function onCommentLinkClick(event) {
   let dataId = this.getAttribute("data-id");
   let postIdQuery = `ol > li#comment-${dataId}`;
   let commentIdQuery = `#jandan-tucao-${dataId}`;
   const postArea = document.querySelector(postIdQuery);
   let opInfo = getAuthorInfoFromPost(postArea);
+
   // Delay the event handler logic so that Jandan's original script gets executed first,
   // this does not block the execution of current method though
   setTimeout(() => {
@@ -137,6 +150,12 @@ function onCommentLinkClick(event) {
     const submitBtn = commentDiv?.querySelector(
       "div.tucao-form > div > button"
     );
+    const authorName = commentDiv
+      ?.querySelector("div.tucao-form input.tucao-nickname")
+      ?.getAttribute("value");
+    const authorEmail = commentDiv
+      ?.querySelector("div.tucao-form input.tucao-email")
+      ?.getAttribute("value");
     const content = commentDiv?.querySelector(
       "div.tucao-form > textarea.tucao-content"
     );
@@ -144,12 +163,6 @@ function onCommentLinkClick(event) {
       console.log(`${EGGS[3]} Comment element not found`);
       return;
     }
-    const authorName = commentDiv
-      ?.querySelector("div.tucao-form input.tucao-nickname")
-      ?.getAttribute("value");
-    const authorEmail = commentDiv
-      ?.querySelector("div.tucao-form input.tucao-email")
-      ?.getAttribute("value");
     submitBtn.addEventListener("click", (_event) => {
       let comment = {
         authorName,
@@ -164,9 +177,25 @@ function onCommentLinkClick(event) {
       let commentStore = IDB.transaction("comments", "readwrite").objectStore(
         "comments"
       );
+      if (comment.content.length < 3 || comment.content.length > 1000) {
+        return;
+      }
       commentStore.add(comment);
     });
-  }, 1000);
+  }, DELAY_TIME_1000);
+
+  // Hide location tag
+  setTimeout(() => {
+    if (REMOVE_LOCATION) {
+      const locationTags = postArea.querySelectorAll(
+        `${commentIdQuery} div.tucao-row > div.tucao-author .tucao-location`
+      );
+      if (!locationTags) {
+        return;
+      }
+      locationTags.forEach((elem) => elem.setAttribute("hidden", true));
+    }
+  }, DELAY_TIME_200);
 }
 
 function getAuthorInfoFromPost(postElement) {

@@ -13,16 +13,16 @@ IDBREQ.onsuccess = (event) => {
   IDB = IDBREQ.result;
   IDB.onversionchange = () => {
     IDB.close();
-    console.log(`${EGGS[2]} Upcoming version change, closing idb`);
+    console.log(`${EGGS[1]} Upcoming version change, closing idb`);
   };
-  console.log(`${EGGS[4]} Idb has been opened with the name of ${DB_NAME}`);
+  console.log(`${EGGS[1]} Idb has been opened with the name of ${DB_NAME}`);
 };
 
 // We don't have version changes very often for now
 IDBREQ.onupgradeneeded = (event) => {
   let idb = event.target.result;
   idb.onerror = () => {
-    console.log(`${EGGS[2]} Failed to upgrade idb v${DB_VERSION}`);
+    console.log(`${EGGS[1]} Failed to upgrade idb v${DB_VERSION}`);
   };
   if (!idb.objectStoreNames.contains("posts")) {
     let postStore = idb.createObjectStore("posts", { keyPath: "postId" });
